@@ -1,0 +1,27 @@
+/* src/routes/Signup.css */
+.dob-selects {
+    display: flex;
+    gap: 10px;
+}
+
+.dob-selects select {
+    flex: 1;
+    color: #555;
+}
+
+.terms {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 16px;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.terms a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}

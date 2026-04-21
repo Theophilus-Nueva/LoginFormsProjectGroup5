@@ -1,0 +1,37 @@
+/* src/routes/Login.css */
+.captcha-container {
+    display: flex;
+    gap: 12px;
+}
+
+.captcha-box {
+    background-color: #d1d5db;
+    flex: 1;
+    border-radius: 6px;
+}
+
+.captcha-container input {
+    flex: 1;
+    width: 100%;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #555;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 6px;
+    width: 100%;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: #f9fafb;
+}
