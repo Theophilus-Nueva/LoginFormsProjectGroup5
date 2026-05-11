@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
-import { loginUser } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/authService'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -8,8 +8,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
-
-  // 2. Initialize the navigator
+  
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,9 +21,8 @@ const Login = () => {
       const data = await loginUser(email, password);
 
       if (data.status === "mfa_required") {
-        // 3. THE REDIRECT! 
-        // If login is successful, immediately send them to the success page.
-        navigate('/success');
+        // Send the user to the OTP screen and pass along their user_id
+        navigate('/otp', { state: { userId: data.user_id } });
       }
 
     } catch (error) {
@@ -40,59 +38,40 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', fontFamily: 'sans-serif' }}>
+    <div className="login-container">
       <h2>Group 5 Login</h2>
 
+      {/* Using dynamic classes so your CSS file can style errors vs successes */}
       {message && (
-        <div style={{ 
-          padding: '10px', 
-          marginBottom: '15px', 
-          backgroundColor: '#ffebee',
-          color: '#c62828',
-          border: '1px solid #ef9a9a',
-          borderRadius: '4px'
-        }}>
+        <div className={isError ? "message error" : "message success"}>
           {message}
         </div>
       )}
 
-      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
+      <form onSubmit={handleLogin}>
+        <div className="input-group">
+          <label>Email:</label>
           <input 
             type="email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
           />
         </div>
 
-        <div>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
+        <div className="input-group">
+          <label>Password:</label>
           <input 
             type="password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
           />
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          style={{
-            padding: '10px',
-            backgroundColor: isLoading ? '#ccc' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: isLoading ? 'not-allowed' : 'pointer'
-          }}
-        >
+        <button type="submit" disabled={isLoading}>
           {isLoading ? "Authenticating..." : "Sign In"}
         </button>
       </form>
