@@ -1,79 +1,73 @@
+// src/routes/OtpVerification.jsx
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import './OtpVerification.css'; 
 
-const OtpVerification = () => {
+export default function OtpVerification() {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   
-  // These hooks let us grab the data passed from the Login page and teleport the user
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Retrieve the userId we passed over from the Login screen
   const userId = location.state?.userId;
 
   const handleVerify = (e) => {
     e.preventDefault();
     
-    // We will wire this up to the live backend next!
+    // Placeholder for backend connection
     console.log("Verifying OTP:", otp, "for User ID:", userId);
-    setMessage("OTP Submitted! (Backend connection coming next)");
-    
-    // Once the backend verifies the OTP, we will uncomment this to send them to the success page:
-    // navigate('/success');
+    setIsError(false);
+    setMessage("OTP Submitted! (Backend connection next)");
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', fontFamily: 'sans-serif', textAlign: 'center' }}>
+    <div className="container">
       <h2>Two-Factor Authentication</h2>
       
       {userId ? (
-        <p style={{ color: '#555' }}>Please enter the 3-digit verification code sent to your email.</p>
+        <p className="otp-subtitle">
+          Please enter the 3-digit verification code sent to your email.
+        </p>
       ) : (
-        <p style={{ color: 'red' }}>Warning: No User ID detected. Did you log in first?</p>
+        <p className="otp-subtitle required" style={{ fontWeight: 'bold' }}>
+          Warning: No User ID detected. Did you log in first?
+        </p>
       )}
 
       {message && (
-        <div style={{ padding: '10px', margin: '15px 0', backgroundColor: '#e3f2fd', color: '#1565c0', borderRadius: '4px' }}>
+        <div className={`alert-box ${isError ? 'alert-error' : 'alert-success'}`}>
           {message}
         </div>
       )}
 
-      <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <input
-          type="text"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          placeholder="e.g. 456"
-          required
-          maxLength="6"
-          style={{ 
-            padding: '12px', 
-            fontSize: '18px', 
-            textAlign: 'center', 
-            letterSpacing: '5px',
-            border: '1px solid #ccc',
-            borderRadius: '4px'
-          }}
-        />
+      <form onSubmit={handleVerify}>
+        <div className="form-group">
+          <label>Verification Code <span className="required">*</span></label>
+          <input
+            type="text"
+            className="otp-input"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            placeholder="---"
+            required
+            maxLength="3"
+            disabled={!userId}
+          />
+        </div>
+
         <button 
           type="submit" 
+          className="btn-primary"
           disabled={!userId}
-          style={{ 
-            padding: '12px', 
-            backgroundColor: userId ? '#007bff' : '#ccc', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: userId ? 'pointer' : 'not-allowed',
-            fontWeight: 'bold'
-          }}
         >
           Verify Code
         </button>
       </form>
+
+      <div className="links">
+        <Link to="/">Back to Login</Link>
+      </div>
     </div>
   );
-};
-
-export default OtpVerification;
+}
