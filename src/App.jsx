@@ -5,6 +5,8 @@ import './App.css';
 
 import Login from './routes/Login';
 import Signup from './routes/Signup';
+import Success from './routes/Success'; 
+import OtpVerification from './routes/OtpVerification'; 
 
 function App() {
   return (
@@ -16,6 +18,12 @@ function App() {
           
           {/* Route for the Signup page */}
           <Route path="/signup" element={<Signup />} />
+
+          {/* Your new Success teleport destination */}
+          <Route path="/success" element={<Success />} />
+
+          {/* The MFA verification screen we will build next */}
+          <Route path="/otp" element={<OtpVerification />} />
         </Routes>
       </div>
     </Router>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { loginUser } from '../services/authService'; // Import your new service
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { loginUser } from '../services/authService';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -8,19 +9,22 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
+  // 2. Initialize the navigator
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
+    setIsError(false);
     
     try {
-      // Use the service here!
       const data = await loginUser(email, password);
 
       if (data.status === "mfa_required") {
-        setIsError(false);
-        setMessage("Login success! (MFA flow will be added here later)");
-        console.log("User ID for next step:", data.user_id);
+        // 3. THE REDIRECT! 
+        // If login is successful, immediately send them to the success page.
+        navigate('/success');
       }
 
     } catch (error) {
@@ -43,9 +47,9 @@ const Login = () => {
         <div style={{ 
           padding: '10px', 
           marginBottom: '15px', 
-          backgroundColor: isError ? '#ffebee' : '#e8f5e9',
-          color: isError ? '#c62828' : '#2e7d32',
-          border: `1px solid ${isError ? '#ef9a9a' : '#a5d6a7'}`,
+          backgroundColor: '#ffebee',
+          color: '#c62828',
+          border: '1px solid #ef9a9a',
           borderRadius: '4px'
         }}>
           {message}
