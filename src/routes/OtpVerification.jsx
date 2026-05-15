@@ -1,4 +1,3 @@
-// src/routes/OtpVerification.jsx
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import './OtpVerification.css'; 
@@ -15,7 +14,6 @@ export default function OtpVerification() {
   const handleVerify = (e) => {
     e.preventDefault();
     
-    // Placeholder for backend connection
     console.log("Verifying OTP:", otp, "for User ID:", userId);
     setIsError(false);
     setMessage("OTP Submitted! (Backend connection next)");
