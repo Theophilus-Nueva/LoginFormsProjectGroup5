@@ -90,7 +90,6 @@ export default function Login() {
                 </div>
                 
                 <div className="form-group">
-                    <label>Captcha <span className="required">*</span></label>
                     <div className="captcha-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                         {/* 5. Live Google reCAPTCHA widget instead of the fake code box */}
                         <ReCAPTCHA
@@ -103,19 +102,9 @@ export default function Login() {
                 <button type="submit" className="btn-primary" disabled={isLoading}>
                     {isLoading ? 'Authenticating...' : 'Sign In'}
                 </button>
-                
-                <button type="button" className="btn-secondary" disabled={isLoading}>
-                    <img 
-                      src={logo_google}
-                      alt="Google logo" 
-                      width="18" 
-                    />
-                    Sign In with Google
-                </button>
             </form>
             
             <div className="links">
-                <a href="#forgot">Forgot your password?</a>
                 <div style={{ marginTop: '8px' }}>
                     Don't have an account? <Link to="/signup">Register</Link>
                 </div>
