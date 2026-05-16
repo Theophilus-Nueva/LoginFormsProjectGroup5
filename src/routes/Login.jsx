@@ -7,7 +7,6 @@ import './Login.css';
 import logo_google from '../assets/logo_google.png';
 
 export default function Login() {
-    // --- STATE MANAGEMENT ---
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +15,13 @@ export default function Login() {
 
     const navigate = useNavigate();
 
-    // --- FORM SUBMISSION LOGIC ---
     const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         setMessage('');
         setIsError(false);
+
+        console.log("EXACT EMAIL BEING SENT TO SERVICE:", `"${email}"`);
 
         try {
             const data = await loginUser(email, password);
@@ -46,7 +46,6 @@ export default function Login() {
         <div className="container">
             <h2>Sign In</h2>
 
-            {/* Dynamic Error Message Box */}
             {message && (
                 <div style={{ 
                     color: isError ? '#c62828' : '#2e7d32', 
@@ -88,7 +87,7 @@ export default function Login() {
                         <input 
                             type="text" 
                             placeholder="Enter Code" 
-                            disabled={isLoading} // Locked while authenticating
+                            disabled={isLoading}
                         />
                     </div>
                 </div>

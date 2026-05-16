@@ -28,7 +28,6 @@ export const registerUser = async (username, email, password) => {
     }
 };
 
-// You can also add your OTP verification here so it's ready!
 export const verifyOtp = async (userId, code) => {
     try {
         const response = await axios.post(`${API_URL}/api/auth/verify-otp`, {
