@@ -6,6 +6,8 @@ import './Login.css';
 
 import logo_google from '../assets/logo_google.png';
 
+const navigate = useNavigate();
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,8 +29,9 @@ export default function Login() {
             const data = await loginUser(email, password);
 
             if (data.status === "mfa_required") {
-                // Teleport to the OTP screen upon successful password check!
-                navigate('/otp', { state: { userId: data.user_id } });
+                navigate('/otp', { 
+                    state: { userId: data.user_id } 
+                });
             }
         } catch (error) {
             setIsError(true);
