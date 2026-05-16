@@ -12,7 +12,6 @@ export default function Signup() {
     const [password, setPassword] = useState('');
     
     // --- STATE FOR UI COMPLETENESS ---
-    const [phone, setPhone] = useState('');
     const [captchaToken, setCaptchaToken] = useState(null); // 2. State to hold the token
 
     // --- UX STATES ---
@@ -102,17 +101,6 @@ export default function Signup() {
                     />
                 </div>
 
-                <div className="form-group">
-                    <label>Phone Number <span className="required">*</span></label>
-                    <input 
-                        type="tel" 
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required 
-                        disabled={isLoading}
-                    />
-                </div>
-                
                 <div className="form-group">
                     <label>Password <span className="required">*</span></label>
                     <input 
