@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios'; // We need axios to talk to FastAPI
+import axios from 'axios';
 import './OtpVerification.css'; 
 
 export default function OtpVerification() {
@@ -15,7 +15,7 @@ export default function OtpVerification() {
   useEffect(() => {
     if (!userId) {
       console.warn("Unauthorized access. Sending back to login.");
-      navigate('/'); // Redirect to your login route
+      navigate('/');
     }
   }, [userId, navigate]);
 

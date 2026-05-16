@@ -1,16 +1,16 @@
 // src/routes/Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ReCAPTCHA from "react-google-recaptcha"; // 1. Import the component
 import { loginUser } from '../services/authService';
 import './Login.css';
 
 import logo_google from '../assets/logo_google.png';
 
-const navigate = useNavigate();
-
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [captchaToken, setCaptchaToken] = useState(null); // 2. State to hold the token
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
@@ -19,26 +19,32 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
         setMessage('');
         setIsError(false);
 
+        // 3. Strict Check: Require reCAPTCHA verification before hitting the database
+        if (!captchaToken) {
+            setIsError(true);
+            setMessage("Please check the 'I'm not a robot' box.");
+            return;
+        }
+
+        setIsLoading(true);
         console.log("EXACT EMAIL BEING SENT TO SERVICE:", `"${email}"`);
 
         try {
-            const data = await loginUser(email, password);
+            // 4. Pass captchaToken to the backend service call
+            const data = await loginUser(email, password, captchaToken);
 
             if (data.status === "mfa_required") {
-                navigate('/otp', { 
-                    state: { userId: data.user_id } 
-                });
+                navigate('/otp', { state: { userId: data.user_id } });
             }
         } catch (error) {
             setIsError(true);
             if (error.response && error.response.status === 401) {
                 setMessage("Invalid email or password.");
             } else {
-                setMessage("Cannot connect to the server. Please try again.");
+                setMessage(error.response?.data?.detail || "Cannot connect to the server. Please try again.");
             }
         } finally {
             setIsLoading(false);
@@ -85,12 +91,11 @@ export default function Login() {
                 
                 <div className="form-group">
                     <label>Captcha <span className="required">*</span></label>
-                    <div className="captcha-container">
-                        <div className="captcha-box"></div>
-                        <input 
-                            type="text" 
-                            placeholder="Enter Code" 
-                            disabled={isLoading}
+                    <div className="captcha-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                        {/* 5. Live Google reCAPTCHA widget instead of the fake code box */}
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_CAPTCHA_KEY || process.env.REACT_APP_CAPTCHA_KEY} 
+                            onChange={(token) => setCaptchaToken(token)}
                         />
                     </div>
                 </div>
