@@ -68,7 +68,7 @@ export default function Login() {
 
             <form onSubmit={handleLogin}>
                 <div className="form-group">
-                    <label>Email or mobile number <span className="required">*</span></label>
+                    <label>Email <span className="required">*</span></label>
                     <input 
                         type="text" 
                         value={email}
