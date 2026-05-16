@@ -1,6 +1,7 @@
 // src/routes/Signup.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ReCAPTCHA from "react-google-recaptcha"; // 1. Import the component
 import { registerUser } from '../services/authService';
 import './Signup.css';
 
@@ -12,9 +13,7 @@ export default function Signup() {
     
     // --- STATE FOR UI COMPLETENESS ---
     const [phone, setPhone] = useState('');
-    const [month, setMonth] = useState('');
-    const [day, setDay] = useState('');
-    const [year, setYear] = useState('');
+    const [captchaToken, setCaptchaToken] = useState(null); // 2. State to hold the token
 
     // --- UX STATES ---
     const [isLoading, setIsLoading] = useState(false);
@@ -25,28 +24,39 @@ export default function Signup() {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
         setMessage('');
         setIsError(false);
 
+        // 3. Strict Check: Require reCAPTCHA verification before submitting
+        if (!captchaToken) {
+            setIsError(true);
+            setMessage("Please check the 'I'm not a robot' box.");
+            return;
+        }
+
+        setIsLoading(true);
+
         try {
-            // Sending the 3 fields your Python backend currently expects
-            await registerUser(username, email, password);
+            // 4. Pass captchaToken to your authService register function
+            const data = await registerUser(username, email, password, captchaToken);
             
-            // Show success message and redirect to login after 2 seconds
-            setIsError(false);
-            setMessage("Account created successfully! Redirecting to login...");
-            
-            setTimeout(() => {
-                navigate('/');
-            }, 2000);
+            // If backend handles the strict flow and requests OTP verification
+            if (data?.status === "pending_verification") {
+                navigate('/otp', { state: { email: email } });
+            } else {
+                setIsError(false);
+                setMessage("Account created successfully! Redirecting to login...");
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
+            }
 
         } catch (error) {
             setIsError(true);
             if (error.response && error.response.status === 400) {
-                setMessage("That email is already registered.");
+                setMessage("That email or username is already registered.");
             } else {
-                setMessage("Cannot connect to the server. Please try again.");
+                setMessage(error.response?.data?.detail || "Cannot connect to the server. Please try again.");
             }
         } finally {
             setIsLoading(false);
@@ -114,29 +124,12 @@ export default function Signup() {
                         disabled={isLoading}
                     />
                 </div>
-                
-                <div className="form-group">
-                    <label>Date of Birth <span className="required">*</span></label>
-                    <div className="dob-selects">
-                        <select required value={month} onChange={(e) => setMonth(e.target.value)} disabled={isLoading}>
-                            <option value="" disabled>Month</option>
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            {/* Add remaining months */}
-                        </select>
-                        <select required value={day} onChange={(e) => setDay(e.target.value)} disabled={isLoading}>
-                            <option value="" disabled>Day</option>
-                            <option value="01">1</option>
-                            <option value="02">2</option>
-                            {/* Add remaining days */}
-                        </select>
-                        <select required value={year} onChange={(e) => setYear(e.target.value)} disabled={isLoading}>
-                            <option value="" disabled>Year</option>
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
-                            {/* Add remaining years */}
-                        </select>
-                    </div>
+
+                <div className="form-group" style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
+                    <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_CAPTCHA_KEY || process.env.REACT_APP_CAPTCHA_KEY} 
+                        onChange={(token) => setCaptchaToken(token)}
+                    />
                 </div>
                 
                 <p className="terms">

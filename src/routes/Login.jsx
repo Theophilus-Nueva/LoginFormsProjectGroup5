@@ -91,7 +91,6 @@ export default function Login() {
                 
                 <div className="form-group">
                     <div className="captcha-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                        {/* 5. Live Google reCAPTCHA widget instead of the fake code box */}
                         <ReCAPTCHA
                             sitekey={import.meta.env.VITE_CAPTCHA_KEY || process.env.REACT_APP_CAPTCHA_KEY} 
                             onChange={(token) => setCaptchaToken(token)}
