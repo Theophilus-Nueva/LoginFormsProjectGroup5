@@ -5,8 +5,6 @@ import ReCAPTCHA from "react-google-recaptcha"; // 1. Import the component
 import { loginUser } from '../services/authService';
 import './Login.css';
 
-import logo_google from '../assets/logo_google.png';
-
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

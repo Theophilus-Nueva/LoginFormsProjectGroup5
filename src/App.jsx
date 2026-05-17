@@ -9,6 +9,8 @@ import Dashboard from './routes/Dashboard';
 
 import ProtectedRoute from './routes/ProtectedRoute';
 
+import './App.css'
+
 function App() {
   return (
     <BrowserRouter>
