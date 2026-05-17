@@ -15,17 +15,14 @@ export const loginUser = async (email, password, captchaToken) => {
   }
 };
 
-export const registerUser = async (username, email, password) => {
-    try {
-      const response = await axios.post(`${API_URL}/api/auth/signup`, {
-        username,
-        email,
-        password
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+export const registerUser = async (username, email, password, captchaToken) => {
+  const response = await axios.post(`${API_URL}/api/auth/signup`, {
+      username: username,
+      email: email,
+      password: password,
+      captcha_token: captchaToken
+  });
+  return response.data;
 };
 
 export const verifyOtp = async (userId, code) => {

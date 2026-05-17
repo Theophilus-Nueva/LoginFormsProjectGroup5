@@ -1,20 +1,17 @@
 // src/routes/Signup.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ReCAPTCHA from "react-google-recaptcha"; // 1. Import the component
+import ReCAPTCHA from "react-google-recaptcha";
 import { registerUser } from '../services/authService';
 import './Signup.css';
 
 export default function Signup() {
-    // --- STATE FOR BACKEND ---
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     
-    // --- STATE FOR UI COMPLETENESS ---
-    const [captchaToken, setCaptchaToken] = useState(null); // 2. State to hold the token
+    const [captchaToken, setCaptchaToken] = useState(null);
 
-    // --- UX STATES ---
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
@@ -26,7 +23,6 @@ export default function Signup() {
         setMessage('');
         setIsError(false);
 
-        // 3. Strict Check: Require reCAPTCHA verification before submitting
         if (!captchaToken) {
             setIsError(true);
             setMessage("Please check the 'I'm not a robot' box.");
@@ -36,26 +32,36 @@ export default function Signup() {
         setIsLoading(true);
 
         try {
-            // 4. Pass captchaToken to your authService register function
+            // Pass all four variables to your authService
             const data = await registerUser(username, email, password, captchaToken);
             
-            // If backend handles the strict flow and requests OTP verification
-            if (data?.status === "pending_verification") {
-                navigate('/otp', { state: { email: email } });
-            } else {
-                setIsError(false);
-                setMessage("Account created successfully! Redirecting to login...");
-                setTimeout(() => {
-                    navigate('/');
-                }, 2000);
-            }
+            // Success Handling
+            setIsError(false);
+            setMessage("Account created successfully! Please check your email to verify.");
+            setTimeout(() => {
+                navigate('/');
+            }, 3000);
 
         } catch (error) {
             setIsError(true);
-            if (error.response && error.response.status === 400) {
-                setMessage("That email or username is already registered.");
-            } else {
-                setMessage(error.response?.data?.detail || "Cannot connect to the server. Please try again.");
+            
+            // 1. Handle FastAPI 422 Validation Errors (Fixes React Error #31)
+            if (error.response?.status === 422) {
+                const missingField = error.response.data.detail[0].loc[1];
+                setMessage(`Missing or invalid field: ${missingField}`);
+            } 
+            // 2. Handle Custom 400 Errors from your backend worker
+            else if (error.response?.status === 400) {
+                setMessage("That email is already registered or CAPTCHA failed.");
+            } 
+            // 3. Handle Standard Errors (Safely extracting strings)
+            else {
+                const errorDetail = error.response?.data?.detail;
+                setMessage(
+                    typeof errorDetail === 'string' 
+                        ? errorDetail 
+                        : "Cannot connect to the server. Please try again."
+                );
             }
         } finally {
             setIsLoading(false);
@@ -72,7 +78,11 @@ export default function Signup() {
                     color: isError ? '#c62828' : '#2e7d32', 
                     marginBottom: '15px', 
                     fontSize: '14px',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    padding: '10px',
+                    backgroundColor: isError ? '#ffebee' : '#e8f5e9',
+                    borderRadius: '4px',
+                    border: `1px solid ${isError ? '#ef9a9a' : '#a5d6a7'}`
                 }}>
                     {message}
                 </div>
