@@ -32,16 +32,20 @@ export default function Signup() {
         setIsLoading(true);
 
         try {
+            // Pass all four variables to your authService
             const data = await registerUser(username, email, password, captchaToken);
             
+            // Check if the backend put them in quarantine and wants an OTP
             if (data?.status === "pending_verification") {
                 setIsError(false);
                 setMessage("Check your email! Redirecting to verification...");
                 
                 setTimeout(() => {
+                    // Route them to the OTP page and pass the email along!
                     navigate('/otp', { state: { email: email } });
                 }, 2000);
             } else {
+                // Fallback just in case
                 setIsError(false);
                 setMessage("Account created successfully! Redirecting...");
                 setTimeout(() => {
@@ -52,13 +56,16 @@ export default function Signup() {
         } catch (error) {
             setIsError(true);
             
+            // 1. Handle FastAPI 422 Validation Errors (Fixes React Error #31)
             if (error.response?.status === 422) {
                 const missingField = error.response.data.detail[0].loc[1];
                 setMessage(`Missing or invalid field: ${missingField}`);
             } 
+            // 2. Handle Custom 400 Errors from your backend worker
             else if (error.response?.status === 400) {
                 setMessage("That email is already registered or CAPTCHA failed.");
             } 
+            // 3. Handle Standard Errors (Safely extracting strings)
             else {
                 const errorDetail = error.response?.data?.detail;
                 setMessage(
@@ -76,6 +83,7 @@ export default function Signup() {
         <div className="container">
             <h2>Create an account</h2>
 
+            {/* Dynamic Message Box */}
             {message && (
                 <div style={{ 
                     color: isError ? '#c62828' : '#2e7d32', 
