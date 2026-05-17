@@ -38,8 +38,6 @@ export default function Signup() {
                 setMessage("Check your email! Redirecting to verification...");
                 
                 setTimeout(() => {
-
-                    console.log(data.user_id)
                     navigate('/otp', {
                         state: {
                             user_id: data.user_id,
@@ -47,7 +45,6 @@ export default function Signup() {
                         } });
                 }, 1500);
             } else {
-                // Fallback just in case
                 setIsError(false);
                 setMessage("Account created successfully! Redirecting...");
                 setTimeout(() => {
