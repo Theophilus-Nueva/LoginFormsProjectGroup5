@@ -7,7 +7,7 @@ import Signup from './routes/Signup';
 import OtpVerification from './routes/OtpVerification'; 
 import Dashboard from './routes/Dashboard';
 
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
