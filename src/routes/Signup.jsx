@@ -38,6 +38,8 @@ export default function Signup() {
                 setMessage("Check your email! Redirecting to verification...");
                 
                 setTimeout(() => {
+
+                    console.log(data.user_id)
                     navigate('/otp', {
                         state: {
                             user_id: data.user_id,
@@ -56,16 +58,13 @@ export default function Signup() {
         } catch (error) {
             setIsError(true);
             
-            // 1. Handle FastAPI 422 Validation Errors (Fixes React Error #31)
             if (error.response?.status === 422) {
                 const missingField = error.response.data.detail[0].loc[1];
                 setMessage(`Missing or invalid field: ${missingField}`);
             } 
-            // 2. Handle Custom 400 Errors from your backend worker
             else if (error.response?.status === 400) {
                 setMessage("That email is already registered or CAPTCHA failed.");
             } 
-            // 3. Handle Standard Errors (Safely extracting strings)
             else {
                 const errorDetail = error.response?.data?.detail;
                 setMessage(
