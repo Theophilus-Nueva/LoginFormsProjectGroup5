@@ -7,7 +7,7 @@ import DashboardTokens from '../components/DashboardTokens';
 import DashboardSessions from '../components/DashboardSessions';
 import DashboardMFA from '../components/DashboardMFA';
 
-import './Dashboard.css'; /
+import './Dashboard.css';
 
 export default function Dashboard() {
     const [activeTab, setActiveTab] = useState('users');
