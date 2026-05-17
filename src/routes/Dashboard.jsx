@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import DashboardUsers from '../components/DashboardUsers';
+import DashboardUsers from '../components/DasboardUsers';
 import DashboardLogs from '../components/DashboardLogs';
 import DashboardTokens from '../components/DashboardTokens';
 import DashboardSessions from '../components/DashboardSessions';
