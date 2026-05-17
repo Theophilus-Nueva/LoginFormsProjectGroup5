@@ -27,17 +27,17 @@ export default function Dashboard() {
     if (!token) return null;
 
     return (
-        <div className="dashboard-container">
-            <div className="dashboard-header">
-                <h2 className="dashboard-title">System Security Audit Logs</h2>
-                <button onClick={handleLogout} className="btn-primary logout-btn">
-                    Secure Logout
-                </button>
-            </div>
-
-
-            <div className="tab-content">
-                <DashboardLogs token={token} />
+        <div className="dashboard-page-wrapper">
+            <div className="dashboard-container">
+                <div className="dashboard-header">
+                    <h2 className="dashboard-title">System Security Audit Logs</h2>
+                    <button onClick={handleLogout} className="btn-primary logout-btn">
+                        Secure Logout
+                    </button>
+                </div>
+                <div className="tab-content">
+                    <DashboardLogs token={token} />
+                </div>
             </div>
         </div>
     );
