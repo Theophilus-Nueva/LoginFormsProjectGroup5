@@ -1,14 +1,14 @@
 // src/routes/Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ReCAPTCHA from "react-google-recaptcha"; // 1. Import the component
+import ReCAPTCHA from "react-google-recaptcha"; 
 import { loginUser } from '../services/authService';
 import './Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [captchaToken, setCaptchaToken] = useState(null); // 2. State to hold the token
+    const [captchaToken, setCaptchaToken] = useState(null); 
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
@@ -20,7 +20,6 @@ export default function Login() {
         setMessage('');
         setIsError(false);
 
-        // 3. Strict Check: Require reCAPTCHA verification before hitting the database
         if (!captchaToken) {
             setIsError(true);
             setMessage("Please check the 'I'm not a robot' box.");
@@ -28,14 +27,21 @@ export default function Login() {
         }
 
         setIsLoading(true);
-        console.log("EXACT EMAIL BEING SENT TO SERVICE:", `"${email}"`);
 
         try {
-            // 4. Pass captchaToken to the backend service call
             const data = await loginUser(email, password, captchaToken);
 
-            if (data.status === "mfa_required") {
-                navigate('/otp', { state: { userId: data.user_id } });
+            // FIXED: Passing the exact state keys the OTP bouncer expects
+            if (data.status === "mfa_required" || data.status === "pending_verification") {
+                setMessage("Please check your email for the OTP.");
+                setTimeout(() => {
+                    navigate('/otp', { 
+                        state: { 
+                            user_id: data.user_id, 
+                            email: email 
+                        } 
+                    });
+                }, 1500);
             }
         } catch (error) {
             setIsError(true);
@@ -58,7 +64,11 @@ export default function Login() {
                     color: isError ? '#c62828' : '#2e7d32', 
                     marginBottom: '15px', 
                     fontSize: '14px',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    padding: '10px',
+                    backgroundColor: isError ? '#ffebee' : '#e8f5e9',
+                    borderRadius: '4px',
+                    border: `1px solid ${isError ? '#ef9a9a' : '#a5d6a7'}`
                 }}>
                     {message}
                 </div>
