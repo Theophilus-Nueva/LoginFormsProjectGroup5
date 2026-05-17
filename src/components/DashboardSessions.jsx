@@ -23,27 +23,27 @@ export default function DashboardSessions({ token }) {
     }, [token]);
 
     if (isLoading) return <p>Loading Sessions...</p>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-responsive">
             <h3>Active Sessions Table</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <table className="data-table">
                 <thead>
-                    <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                        <th style={{ padding: '8px' }}>Session ID</th>
-                        <th style={{ padding: '8px' }}>User ID</th>
-                        <th style={{ padding: '8px' }}>IP Address</th>
-                        <th style={{ padding: '8px' }}>Expires At</th>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>User ID</th>
+                        <th>IP Address</th>
+                        <th>Expires At</th>
                     </tr>
                 </thead>
                 <tbody>
                     {sessions.map((s) => (
-                        <tr key={s.session_id} style={{ borderBottom: '1px solid #ddd' }}>
-                            <td style={{ padding: '8px', fontSize: '0.85rem' }}>{s.session_id.substring(0, 8)}...</td>
-                            <td style={{ padding: '8px', fontSize: '0.85rem' }}>{s.user_id.substring(0, 8)}...</td>
-                            <td style={{ padding: '8px' }}>{s.ip_address}</td>
-                            <td style={{ padding: '8px' }}>{new Date(s.expires_at).toLocaleString()}</td>
+                        <tr key={s.session_id}>
+                            <td className="text-small">{s.session_id.substring(0, 8)}...</td>
+                            <td className="text-small">{s.user_id.substring(0, 8)}...</td>
+                            <td>{s.ip_address}</td>
+                            <td>{new Date(s.expires_at).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

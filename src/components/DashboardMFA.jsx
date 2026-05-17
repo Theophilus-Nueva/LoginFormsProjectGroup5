@@ -23,27 +23,27 @@ export default function DashboardMFA({ token }) {
     }, [token]);
 
     if (isLoading) return <p>Loading MFA Codes...</p>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-responsive">
             <h3>MFA Codes Table</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <table className="data-table">
                 <thead>
-                    <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                        <th style={{ padding: '8px' }}>Code ID</th>
-                        <th style={{ padding: '8px' }}>User ID</th>
-                        <th style={{ padding: '8px' }}>OTP Code</th>
-                        <th style={{ padding: '8px' }}>Expires At</th>
+                    <tr>
+                        <th>Code ID</th>
+                        <th>User ID</th>
+                        <th>OTP Code</th>
+                        <th>Expires At</th>
                     </tr>
                 </thead>
                 <tbody>
                     {mfa.map((m) => (
-                        <tr key={m.code_id} style={{ borderBottom: '1px solid #ddd' }}>
-                            <td style={{ padding: '8px' }}>{m.code_id}</td>
-                            <td style={{ padding: '8px', fontSize: '0.85rem' }}>{m.user_id.substring(0, 8)}...</td>
-                            <td style={{ padding: '8px', fontWeight: 'bold', letterSpacing: '2px' }}>{m.code}</td>
-                            <td style={{ padding: '8px' }}>{new Date(m.expires_at).toLocaleString()}</td>
+                        <tr key={m.code_id}>
+                            <td>{m.code_id}</td>
+                            <td className="text-small">{m.user_id.substring(0, 8)}...</td>
+                            <td className="text-bold letter-spacing">{m.code}</td>
+                            <td>{new Date(m.expires_at).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -23,31 +23,31 @@ export default function DashboardUsers({ token }) {
     }, [token]);
 
     if (isLoading) return <p>Loading Users...</p>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-responsive">
             <h3>Users Table</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <table className="data-table">
                 <thead>
-                    <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                        <th style={{ padding: '8px' }}>User ID</th>
-                        <th style={{ padding: '8px' }}>Username</th>
-                        <th style={{ padding: '8px' }}>Email</th>
-                        <th style={{ padding: '8px' }}>Verified</th>
-                        <th style={{ padding: '8px' }}>Created At</th>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Verified</th>
+                        <th>Created At</th>
                     </tr>
                 </thead>
                 <tbody>
                     {users.map((user) => (
-                        <tr key={user.user_id} style={{ borderBottom: '1px solid #ddd' }}>
-                            <td style={{ padding: '8px', fontSize: '0.85rem' }}>{user.user_id.substring(0, 8)}...</td>
-                            <td style={{ padding: '8px' }}>{user.username}</td>
-                            <td style={{ padding: '8px' }}>{user.email}</td>
-                            <td style={{ padding: '8px', color: user.is_email_verified ? 'green' : 'red' }}>
+                        <tr key={user.user_id}>
+                            <td className="text-small">{user.user_id.substring(0, 8)}...</td>
+                            <td>{user.username}</td>
+                            <td>{user.email}</td>
+                            <td className={user.is_email_verified ? 'text-success' : 'text-danger'}>
                                 {user.is_email_verified ? 'Yes' : 'No'}
                             </td>
-                            <td style={{ padding: '8px' }}>{new Date(user.created_at).toLocaleString()}</td>
+                            <td>{new Date(user.created_at).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>
