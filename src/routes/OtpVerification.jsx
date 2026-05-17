@@ -12,11 +12,9 @@ export default function OtpVerification() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // 1. FIXED: Matching the exact keys sent from Signup.jsx
   const userId = location.state?.user_id; 
   const email = location.state?.email;    
 
-  // The Bouncer: Kicks you out if you try to bypass the login/signup screen
   useEffect(() => {
     if (!userId) {
       console.warn("Unauthorized access. Sending back to login.");
@@ -35,12 +33,9 @@ export default function OtpVerification() {
         otp_code: otp
       });
 
-      // 2. THE UPGRADE: Hand out the VIP Pass!
-      // This checks if FastAPI sent a real JWT token. If it did, save it.
       if (response.data.access_token) {
           localStorage.setItem("authToken", response.data.access_token);
       } else {
-          // Temporary fallback so you can test it right now before we upgrade FastAPI
           localStorage.setItem("authToken", "true");
       }
 
@@ -55,14 +50,12 @@ export default function OtpVerification() {
     }
   };
 
-  // Prevent rendering the UI for a split second while redirecting an unauthorized user
   if (!userId) return null;
 
   return (
     <div className="container">
       <h2>Two-Factor Authentication</h2>
       
-      {/* Upgraded to display the actual email passed from Signup! */}
       <p className="otp-subtitle">
         Please enter the 6-digit verification code sent to <br/>
         <strong>{email || "your email"}</strong>.

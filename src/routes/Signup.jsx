@@ -1,4 +1,3 @@
-// src/routes/Signup.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -32,18 +31,19 @@ export default function Signup() {
         setIsLoading(true);
 
         try {
-            // Pass all four variables to your authService
             const data = await registerUser(username, email, password, captchaToken);
             
-            // Check if the backend put them in quarantine and wants an OTP
             if (data?.status === "pending_verification") {
                 setIsError(false);
                 setMessage("Check your email! Redirecting to verification...");
                 
                 setTimeout(() => {
-                    // Route them to the OTP page and pass the email along!
-                    navigate('/otp', { state: { email: email } });
-                }, 2000);
+                    navigate('/otp', {
+                        state: {
+                            user_id: data.user_id,
+                            email: email
+                        } });
+                }, 1500);
             } else {
                 // Fallback just in case
                 setIsError(false);

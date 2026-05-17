@@ -31,7 +31,6 @@ export default function Login() {
         try {
             const data = await loginUser(email, password, captchaToken);
 
-            // FIXED: Passing the exact state keys the OTP bouncer expects
             if (data.status === "mfa_required" || data.status === "pending_verification") {
                 setMessage("Please check your email for the OTP.");
                 setTimeout(() => {
