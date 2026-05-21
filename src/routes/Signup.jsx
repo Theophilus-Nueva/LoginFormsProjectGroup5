@@ -9,6 +9,14 @@ export default function Signup() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     
+    const [criteria, setCriteria] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
+    
     const [captchaToken, setCaptchaToken] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -17,10 +25,34 @@ export default function Signup() {
 
     const navigate = useNavigate();
 
+    // --- NEW: Handle Password Change and Regex Testing ---
+    const handlePasswordChange = (e) => {
+        const val = e.target.value;
+        setPassword(val);
+
+        setCriteria({
+            length: val.length >= 8,
+            uppercase: /[A-Z]/.test(val),
+            lowercase: /[a-z]/.test(val),
+            number: /[0-9]/.test(val),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(val)
+        });
+    };
+
+    // Check if ALL password criteria are met
+    const isPasswordValid = Object.values(criteria).every(Boolean);
+
     const handleSignup = async (e) => {
         e.preventDefault();
         setMessage('');
         setIsError(false);
+
+        // --- NEW: Block submission if password is weak ---
+        if (!isPasswordValid) {
+            setIsError(true);
+            setMessage("Please make sure your password meets all requirements.");
+            return;
+        }
 
         if (!captchaToken) {
             setIsError(true);
@@ -123,12 +155,31 @@ export default function Signup() {
                     <input 
                         type="password" 
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         required 
-                        minLength="8"
                         disabled={isLoading}
                     />
                 </div>
+
+                {password.length > 0 && (
+                    <div className="password-checklist" style={{ fontSize: '13px', margin: '10px 0', textAlign: 'left', backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>
+                        <p style={{ margin: '4px 0', color: criteria.length ? '#2e7d32' : '#c62828' }}>
+                            {criteria.length ? '✅' : '❌'} At least 8 characters
+                        </p>
+                        <p style={{ margin: '4px 0', color: criteria.uppercase ? '#2e7d32' : '#c62828' }}>
+                            {criteria.uppercase ? '✅' : '❌'} One uppercase letter
+                        </p>
+                        <p style={{ margin: '4px 0', color: criteria.lowercase ? '#2e7d32' : '#c62828' }}>
+                            {criteria.lowercase ? '✅' : '❌'} One lowercase letter
+                        </p>
+                        <p style={{ margin: '4px 0', color: criteria.number ? '#2e7d32' : '#c62828' }}>
+                            {criteria.number ? '✅' : '❌'} One number
+                        </p>
+                        <p style={{ margin: '4px 0', color: criteria.special ? '#2e7d32' : '#c62828' }}>
+                            {criteria.special ? '✅' : '❌'} One special character
+                        </p>
+                    </div>
+                )}
 
                 <div className="form-group" style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
                     <ReCAPTCHA
@@ -141,7 +192,7 @@ export default function Signup() {
                     By Clicking "Create Account", you agree to our <a href="#terms">Terms and Conditions</a> and have read the <a href="#privacy">Privacy Policy</a>.
                 </p>
                 
-                <button type="submit" className="btn-primary" disabled={isLoading}>
+                <button type="submit" className="btn-primary" disabled={isLoading || !isPasswordValid}>
                     {isLoading ? 'Creating Account...' : 'Create Account'}
                 </button>
             </form>
